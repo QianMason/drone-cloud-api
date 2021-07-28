@@ -106,6 +106,7 @@ func (s *Services) registerPostHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("register post handler called")
 	/*
 		/register
+		FORWARDING REQUEST BY REPACKAGING BODY
 	*/
 	//read out request body
 	body, err := ioutil.ReadAll(r.Body)
@@ -146,6 +147,7 @@ func (s *Services) registerPostHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("dID:", dID)
 	/*
 		/create
+		CREATING OBJECT TO MARSHAL AND SEND
 	*/
 	trackingDevice := models.TrackingDevice{
 		DroneID: dID,
@@ -153,13 +155,11 @@ func (s *Services) registerPostHandler(w http.ResponseWriter, r *http.Request) {
 		Lng:     rd.Lng,
 	}
 	//repackage request body into a new request for registration
-	fmt.Println("sending request to tracking component")
 	trackingCreateURL := "http://" + s.TrackingIP + "/create"
 	jsn, err := json.Marshal(trackingDevice)
 
 	//send second post request to tracking component
-	trackingResp, err := http.Post(trackingCreateURL, "application/json", bytes.NewBuffer(jsn))
-	fmt.Println("trackingResp:", trackingResp)
+	trackingResp, err := http.Post(trackingCreateURL, "application/json", bytes.NewBuffer(jsn)
 	if err != nil {
 		fmt.Println("tracking resp issue")
 		fmt.Println(err)
